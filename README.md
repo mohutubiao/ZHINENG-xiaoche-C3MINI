@@ -119,7 +119,7 @@ main/
 
 ## 7. 开源地址
 
-🔗 [GitHub 仓库](https://github.com/qebabe/xiaozhi-esp32)
+🔗 [GitHub 仓库](https://github.com/mohutubiao/ZHINENG-xiaoche-C3MINI)
 
 ---
 
@@ -139,5 +139,4 @@ main/
 
 ## 9. 交流
 
-- QQ 二群：**34974022**
-- QQ 一群（已满）：183253687
+- 抖音：**创客久久**
