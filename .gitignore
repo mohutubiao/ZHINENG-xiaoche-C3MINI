@@ -19,7 +19,8 @@ sdkconfig.old
 sdkconfig
 sdkconfig.c3
 sdkconfig.tft
-dependencies.lock
+# dependencies.lock 必须提交：锁定 managed_components 版本，
+# 否则别人 clone 后重新解析依赖会拿到最新版，可能出现与本文档不符的编译/运行结果。
 .env
 releases/
 main/assets/lang_config.h
