@@ -1,0 +1,53 @@
+
+# ⚠️ 本板是 4MB Flash 的 C3-MINI1，不是 16MB。
+#    原先这里写的是 16MB + 16m_c3.csv，与实际硬件不符 —— 别人 clone 后
+#    会生成超出 flash 容量的分区表，烧录直接失败。已对齐真实配置。
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions/v2/4m.csv"
+
+# 板型固定为本仓库唯一保留的 C3 小车（防止 menuconfig 被改到已删除的板型）
+CONFIG_BOARD_TYPE_QEBABE_XIAOCHE_C3=y
+
+CONFIG_SR_WN_WN9S_NIHAOXIAOZHI=y
+
+# 唤醒词：C3 支持 Wakenet9（无 AFE），"你好小智" 本地识别
+# 不开这个，assets 打包脚本会跳过模型 → wake_word_=nullptr → 喊不醒
+CONFIG_USE_ESP_WAKE_WORD=y
+
+CONFIG_ESP_WIFI_STATIC_RX_BUFFER_NUM=3
+CONFIG_ESP_WIFI_DYNAMIC_RX_BUFFER_NUM=6
+CONFIG_ESP_WIFI_RX_BA_WIN=3
+CONFIG_LWIP_TCPIP_RECVMBOX_SIZE=16
+CONFIG_MBEDTLS_DYNAMIC_FREE_CONFIG_DATA=y
+
+CONFIG_ESP_WIFI_ENABLE_WPA3_SAE=n
+CONFIG_ESP_WIFI_ESPNOW_MAX_ENCRYPT_NUM=0
+CONFIG_FREERTOS_IDLE_TASK_STACKSIZE=768
+CONFIG_LWIP_IPV6=n
+
+# 启用 httpd 的 WebSocket 服务端支持（用于取代 100ms HTTP 轮询）
+# 不开这个 httpd_ws_send_frame_async 等 API 不存在 → 编译失败
+CONFIG_HTTPD_WS_SUPPORT=y
+
+# TLS 接收缓冲 16384 → 4096（2026-10-22）
+#   C3 没有 PSRAM，堆本来就紧（实测启动峰值只剩 5.5~12KB，反复崩溃）。
+#   服务端下发的音频是 Opus 帧（几十~一百多字节）、信令也是小包，
+#   16KB 接收缓冲纯属浪费。降到 4KB 与发送侧（OUT=4096）对齐，
+#   直接省出 12KB 常驻内存。TLS 本身支持分片，偶发大包不受影响。
+CONFIG_MBEDTLS_SSL_IN_CONTENT_LEN=4096
+
+# TLS 发送缓冲保持 4096（2026-10-22 结论：**不要为了发大包调大它**）
+#   曾把 OUT 提到 8192 想让 4.6KB 的 tools/list 响应单块发出，结果适得其反：
+#   握手阶段 mbedtls 要按 IN+OUT 分配动态缓冲，OUT 越大越容易分配失败 ——
+#     `Dynamic Impl: alloc(zu bytes) failed`
+#     `mbedtls_ssl_handshake returned -0x7F00`  → 连服务器都连不上，唤醒直接失败。
+#   正确做法是**把消息本身压小**（精简工具描述），而不是撑大缓冲。
+CONFIG_MBEDTLS_SSL_OUT_CONTENT_LEN=4096
+
+# ⚠️ 系统事件任务栈 2304 → 3584（2026-10-22）
+#   实测 vTaskList：sys_evt 的栈余量只剩 **32 字节**，等于随时会溢出。
+#   这个任务处理 WiFi/IP 事件（连接、断线、拿到 IP 等），
+#   一旦某个事件回调调用深一点就是栈溢出 → PANIC 重启。
+#   这很可能是"玩一会偶尔重启"的元凶之一（之前只抓到 PANIC，没有 backtrace）。
+#   加 1.25KB 换掉这个隐患，比事后追查崩溃划算。
+CONFIG_ESP_SYSTEM_EVENT_TASK_STACK_SIZE=3584

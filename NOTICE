@@ -1,0 +1,77 @@
+# 第三方代码与素材声明
+
+本项目（qebabe-xiaoche-c3，小智语音小车 C3 版）整体以 **GNU General Public License v3.0** 发布，
+许可证全文见同一目录下的 `LICENSE` 文件。
+
+之所以是 GPL-3.0 而不是 MIT：本项目使用了 GPL-3.0 的 RoboEyes 眼睛动画库（见下文），
+按其传染性，整个固件作为衍生作品一并以 GPL-3.0 发布。
+
+---
+
+## 一、上游项目（MIT，声明必须保留）
+
+本工程基于 [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) 定制。上游以 MIT 许可证发布，
+按 MIT 条款要求，其原始版权与许可声明予以完整保留如下：
+
+```
+MIT License
+
+Copyright (c) 2025 Shenzhen Xinzhi Future Technology Co., Ltd.
+Copyright (c) 2025 Project Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+> 注：本项目此前也曾以 MIT 发布。并入 GPL-3.0 后，MIT 代码仍可按 MIT 单独使用，
+> 但**包含 RoboEyes 的固件整体**必须遵循 GPL-3.0。
+
+---
+
+## 二、第三方代码
+
+| 组件 | 位置 | 许可证 | 说明 |
+|---|---|---|---|
+| **RoboEyes** (FluxGarage) | `main/third_party/roboeyes/` | **GPL-3.0** | 眼睛动画引擎，header-only 编译进固件，是整体 GPL 的原因 |
+| **Adafruit GFX** | `main/third_party/adafruit_gfx/` | BSD | 图形基元 |
+| **gifdec** | `main/display/lvgl_display/gif/` | Public Domain | GIF 解码 |
+| **LVGL** | 依赖管理（`main/idf_component.yml`） | MIT | GUI 框架 |
+| **ESP-IDF** | 框架 | Apache-2.0 | 芯片 SDK |
+
+第三方组件各自的许可证文件保留在其目录内，未做修改。
+
+---
+
+## 三、素材
+
+| 素材 | 位置 | 许可证 / 来源 |
+|---|---|---|
+| **Twemoji** 表情图集 | `main/assets/` 下 `twemoji_64` 相关 | CC-BY 4.0，来源 <https://github.com/twitter/twemoji> |
+| **font_puhui_basic_\*** | `main/assets/` | 源自思源黑体（Source Han Sans），SIL Open Font License 1.1 |
+| **font_awesome_\*** | `main/assets/` | Font Awesome，SIL OFL 1.1 |
+| **提示音 / 欢迎语 .ogg** | `main/assets/locales/`、`main/assets/common/` | 由上游项目提供或经语音合成生成 |
+
+> ⚠️ 待补充：音频素材若由第三方 TTS 服务生成，请自行确认该服务的使用条款是否允许再分发。
+> 如有遗漏的素材来源，欢迎提交 Issue 指出。
+
+---
+
+## 四、免责
+
+本项目为爱好者项目，与乐鑫（Espressif）、小米或任何语音服务提供商无隶属关系。
+使用本项目造成的任何硬件损坏或数据损失，作者不承担责任。
